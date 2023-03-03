@@ -1,6 +1,6 @@
 const date = new Date();
 
-
+console.log(date);
 
 //fetch the scraped data
 var raceInfo = {};

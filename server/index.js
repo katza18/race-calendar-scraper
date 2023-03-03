@@ -9,7 +9,11 @@ const port = 8080;
 async function run() {
     //wait for the scraper to run
     await(scraper.start());
-    const races = scraper.wrcraceinfo;
+
+    //all races in the same date/name format
+    const races = scraper.standardizeF1Info(scraper.f1raceinfo);
+    //scraper.standardizeGT3Info(scraper.gt3raceinfo);
+    console.log(typeof scraper.standardizeF1Info(scraper.f1raceinfo));
 
     //set the get response
     app.get("/", (req, res) => {
