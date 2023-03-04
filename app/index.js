@@ -28,18 +28,15 @@ function addRace(race) {
 
 //fetch the scraped data
 let raceInfo = {};
-async function setScraperData() {
-    await(fetch("http://localhost:8080")
+async function setScraperData(type) {
+    await(fetch(`http://localhost:8080/${type}`)
         .then((response) => response.json())
         .then((data) => raceInfo = data)
         .catch((e) => console.log(e)));
     raceInfo.races.map((race, i) => {
-        console.log(race); //race is a string containing race info
         addRace(race);
     });
 }
-
-
 
 const months = [
     "January",
@@ -106,16 +103,54 @@ const load = () => {
 
     //Set html for the calendar's grid
     grid.innerHTML = day;
-    setScraperData();
 }
 load();
 
+
+function check(type) {
+    if(document.querySelector(`.${type} i`).innerText === "check_box")
+        return true;
+    else return false;
+}
+
 //Set previous and next month buttons
+//Previous
 document.querySelector(".prev").addEventListener("click", () => {
     date.setMonth(date.getMonth() - 1);
+    if (check("f1")) setScraperData("f1");
+    if (check("gt3")) setScraperData("gt3");
     load();
 });
+//Next
 document.querySelector(".next").addEventListener("click", () => {
     date.setMonth(date.getMonth() + 1);
+    if (check("f1")) setScraperData("f1");
+    if (check("gt3")) setScraperData("gt3");
     load();
+});
+
+//Toggle buttons
+//F1
+document.querySelector(".f1 i").addEventListener("click", ()=> {
+    if(check("f1")) {
+        document.querySelector(".f1 i").innerText = "check_box_outline_blank";
+        load();
+        if (check("gt3")) setScraperData("gt3");
+    }
+    else {
+        document.querySelector(".f1 i").innerText = "check_box";
+        setScraperData("f1");
+    }
+});
+//GT3
+document.querySelector(".gt3 i").addEventListener("click", ()=> {
+    if(check("gt3")) {
+        document.querySelector(".gt3 i").innerText = "check_box_outline_blank";
+        load(); //ideally we would just remove all f1 divs and not check
+        if (check("f1")) setScraperData("f1");
+    }
+    else {
+        document.querySelector(".gt3 i").innerText = "check_box";
+        setScraperData("gt3");
+    }
 });
