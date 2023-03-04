@@ -85,6 +85,7 @@ body {
 
 .grid > div {
     border: 0.02rem solid #363636;
+    overflow: scroll;
 }
 
 .grid div:hover:not(.today, .race) {
@@ -105,7 +106,13 @@ body {
 .race {
     font-size: 0.5em;
     width: 100%;
-    background-color: var(--red);
     padding: .5em 0;
+}
+.race:nth-of-type(even){
+    color: var(--white);
+    background-color: var(--red);
+}
+.race:nth-of-type(odd) {
+    background-color: orange;
     color: var(--white);
 }

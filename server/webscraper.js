@@ -80,7 +80,6 @@ function standardizeF1Info(info) {
             }
         }
     }
-    console.log(newInfo);
     return newInfo;
 }
 
@@ -100,7 +99,7 @@ function standardizeGT3Info(info) {
             }
             for(let k = 0; k <= parseInt(dayEnd) - parseInt(dayStart); k++) {
                 const newDay = parseInt(dayStart) + k;
-                newInfo[count] = month.substr(0, 3) + " " + newDay + " " + year + name;
+                newInfo[count] = assembleNewInfo(month, newDay, year, name);
                 count++;
             }
         }
@@ -123,13 +122,13 @@ function standardizeGT3Info(info) {
                 const daysLeft = totalDays - j;
                 if (newDay <= daysThisMonth(monthOne) && doneOne === false) {
                     //month one
-                    newInfo[count] = monthOne.substr(0, 3) + " " + newDay + " " + yearOne + name;
+                    newInfo[count] = assembleNewInfo(monthOne, newDay, yearOne, name);;
                 }
                 else {
                     //month two
                     doneOne = true;
                     newDay = parseInt(dayEnd) - daysLeft + 1;
-                    newInfo[count] = monthTwo.substr(0, 3) + " " + newDay + " " + yearTwo + name;
+                    newInfo[count] = assembleNewInfo(monthTwo, newDay, yearTwo, name);
                 }
                 count++
             }

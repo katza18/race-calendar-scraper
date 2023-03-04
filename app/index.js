@@ -12,10 +12,15 @@ function addRace(race) {
     if (raceMonth === month.substr(0, 3) && raceYear === year) {
         const raceDay = splitRace[1];
         const name = race.slice(12);
-        const boxes = document.querySelectorAll("div.grid div:not(.last-month)");
+        const boxes = document.querySelectorAll("div.grid div:not(.last-month, .next-month)");
+        let calDay;
         for(let i = 0; i < boxes.length; i++) {
-            if(raceDay.localeCompare(boxes[i].innerText) === 0) {
-                boxes[i].innerHTML = `<div>${raceDay}</div><div class="race">${name}</div>`;
+            if (parseInt(boxes[i].innerText) < 10)
+                calDay = "0" + boxes[i].innerText;
+            else
+                calDay = boxes[i].innerText;
+            if(raceDay.localeCompare(calDay) === 0) {
+                boxes[i].innerHTML += `<div class="race">${name}</div>`;
             }
         }
     }
@@ -82,8 +87,8 @@ const load = () => {
     //Add the days that appear for the current month to the calendar
     for(let i = 1; i <= lastDay.getDate(); i++){
         if(i === date.getDate() && date.getMonth() === refDate.getMonth() && date.getFullYear() === refDate.getFullYear())
-            day += `<div class="today">${i}</div>`;
-        else day += `<div>${i}</div>`;
+            day += `<div class="today"><div>${i}</div></div>`;
+        else day += `<div><div class="date">${i}</div></div>`;
         squares++;
     }
 

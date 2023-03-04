@@ -11,9 +11,9 @@ async function run() {
     await(scraper.start());
 
     //all races in the same date/name format
-    const races = scraper.standardizeF1Info(scraper.f1raceinfo);
-    //scraper.standardizeGT3Info(scraper.gt3raceinfo);
-    console.log(typeof scraper.standardizeF1Info(scraper.f1raceinfo));
+    const f1races = scraper.standardizeF1Info(scraper.f1raceinfo);
+    const gt3races = scraper.standardizeGT3Info(scraper.gt3raceinfo);
+    const races = f1races.concat(gt3races);
 
     //set the get response
     app.get("/", (req, res) => {
