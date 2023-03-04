@@ -16,9 +16,13 @@ async function run() {
     const races = f1races.concat(gt3races);
 
     //set the get response
-    app.get("/", (req, res) => {
+    app.get("/f1", (req, res) => {
         res.header('Access-Control-Allow-Origin', '*');
-        res.json({"races": races});
+        res.json({"races": f1races});
+    });
+    app.get("/gt3", (req, res) => {
+        res.header('Access-Control-Allow-Origin', '*');
+        res.json({"races": gt3races});
     });
 
     app.listen(port, () => {
