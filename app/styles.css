@@ -4,6 +4,10 @@
     --white: #f8f8f8;
 }
 
+html {
+    font-family: sans-serif;
+}
+
 body {
     display: flex;
     height: 100vh;
@@ -67,7 +71,7 @@ body {
 .grid {
     height: 100%;
     display: grid;
-    grid-template-columns: repeat(7, auto);
+    grid-template-columns: repeat(7, 1fr);
     align-content: space-between;
 }
 
@@ -79,11 +83,11 @@ body {
     grid-template-rows: repeat(5, 1fr);
 }
 
-.grid div {
+.grid > div {
     border: 0.02rem solid #363636;
 }
 
-.grid div:hover:not(.today) {
+.grid div:hover:not(.today, .race) {
     background-color: #dc2f2f;
     color: var(--white);
     border: 0.04rem solid #dc2f2f;
@@ -95,5 +99,13 @@ body {
 
 .today {
     background-color: #363636;
+    color: var(--white);
+}
+
+.race {
+    font-size: 0.5em;
+    width: 100%;
+    background-color: var(--red);
+    padding: .5em 0;
     color: var(--white);
 }

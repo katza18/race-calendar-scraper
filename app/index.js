@@ -2,18 +2,39 @@ const date = new Date();
 
 console.log(date);
 
+function addRace(race) {
+    let month = document.querySelector("div.month h1").innerText;
+    let year = document.querySelector("div.month p").innerText;
+    splitRace = race.split(" ");
+    const raceMonth = splitRace[0];
+    const raceYear = splitRace[2];
+
+    if (raceMonth === month.substr(0, 3) && raceYear === year) {
+        const raceDay = splitRace[1];
+        const name = race.slice(12);
+        const boxes = document.querySelectorAll("div.grid div:not(.last-month)");
+        for(let i = 0; i < boxes.length; i++) {
+            if(raceDay.localeCompare(boxes[i].innerText) === 0) {
+                boxes[i].innerHTML = `<div>${raceDay}</div><div class="race">${name}</div>`;
+            }
+        }
+    }
+}
+
 //fetch the scraped data
-var raceInfo = {};
+let raceInfo = {};
 async function setScraperData() {
     await(fetch("http://localhost:8080")
         .then((response) => response.json())
-        .then((data) => {raceInfo = data})
+        .then((data) => raceInfo = data)
         .catch((e) => console.log(e)));
     raceInfo.races.map((race, i) => {
         console.log(race); //race is a string containing race info
+        addRace(race);
     });
 }
-setScraperData();
+
+
 
 const months = [
     "January",
@@ -80,6 +101,7 @@ const load = () => {
 
     //Set html for the calendar's grid
     grid.innerHTML = day;
+    setScraperData();
 }
 load();
 

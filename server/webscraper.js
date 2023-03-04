@@ -1,5 +1,6 @@
 const puppeteer = require ('puppeteer');
 const fs = require ('fs/promises');
+const e = require('express');
 
 let f1raceinfo = [];
 let gt3raceinfo = [];
@@ -14,6 +15,14 @@ module.exports = {
     standardizeGT3Info: standardizeGT3Info
 }
 
+function assembleNewInfo(month, day, year, name) {
+    //name should have a leading space " "
+    if (day < 10) {
+        day = `0${day}`;
+    }
+    return month.substr(0, 3) + " " + day + " " + year + name;
+}
+
 //STANDARD DATE: MONTH(MAR) DAY(03) YEAR (2023)
 
 function standardizeF1Info(info) {
@@ -24,44 +33,54 @@ function standardizeF1Info(info) {
     const numDays = 3;
     var count = 0;
 
-    for (let i = 0; i < info.length; i++){
-        //for each info entry, split twice to access month/months, days
-        const splitInfo = info[i].split(" ");
-        const month = splitInfo[0];
-        const days = splitInfo[1].split("-", 2);
-        var sub = 1;
-        var name = "";
+    for (let i = 0; i < info.length; i++) {
+        //for each race, split by space to access month/days data
+        const split = info[i].split(" ");
 
-        while (splitInfo[splitInfo.length - sub] === "") {
-            sub++;
-        }
-        const year = splitInfo[splitInfo.length - sub];
-
-        //reassemble name
-        for(let k = 2; k < splitInfo.length - sub; k++) {
-            if (splitInfo[k] === "");
-            else name += " " + splitInfo[k];
-        }
-
-        //for each day add it to the new info
-        for(let j = 0; j < numDays; j++) {
-            if (month.length === 3) {
-                const newDay = parseInt(days[0]) + j;
-                newInfo[count] = month + " " + newDay + " " + year + name; //need to account for newInfo being bigger than info
+        if(split[5] === "Formula") {
+            //SPANS ONE MONTH
+            const month = split[0];
+            const start = parseInt(split[1]);
+            const end = parseInt(split[3]);
+            const year = split[4];
+            let name = ""
+            for (let i = 5; i < split.length; i++)
+                name += " " + split[i];
+            for (let j = 0; j <= end - start; j++) {
+                newInfo[count] = assembleNewInfo(month, start + j, year, name);
+                count++;
             }
-            else {
-                const months = month.split("-", 2);
-                if (days [0 + j] > 2) { //first month
-                    newInfo[count] = months[0] + " " + days[0 + j] + " " + year + name;
+        }
+        else {
+            //SPANS TWO MONTHS
+            const monthOne = split[0];
+            const monthTwo = split[3];
+            const start = parseInt(split[1]);
+            const end = parseInt(split[4]);
+            const year = split[5];
+            let name = "";
+            let newDay = 0;
+            let doneOne = false;
+            const totalDays = daysThisMonth(monthOne) - start + 1 + end;
+
+            for (let i = 6; i < split.length; i++)
+                name += " " + split[i];
+            for (let j = 0; j < totalDays; j++) {
+                newDay = start + j;
+                const daysLeft = totalDays - j;
+                if (newDay <= daysThisMonth(monthOne) && doneOne === false) {
+                    newInfo[count] = assembleNewInfo(monthOne, newDay, year, name);
                 }
                 else {
-                    newInfo[count] = months[1] + " " + days[0 + j] + " " + year + name;
+                    doneOne = true;
+                    newDay = end - daysLeft + 1;
+                    newInfo[count] = assembleNewInfo(monthTwo, newDay, year, name);
                 }
-
+                count++;
             }
-            count++; //always increment count when newInfo gets a new entry
         }
     }
+    console.log(newInfo);
     return newInfo;
 }
 
@@ -135,33 +154,23 @@ function daysThisMonth(month) {
 async function start() {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
-    await page.goto("https://www.formula1.com/en/racing/2023.html");
+    await page.goto("https://www.espn.com/f1/schedule");
 
-    //F1 Race Names
-    const races = await page.$$eval("div.event-title.f1--xxs", (races) => {
+    //F1 Race Info
+    const races = await page.$$eval("td.race__col a", (races) => {
+        //maps all f1 race names to races
         return races.map(x => x.textContent);
     });
-
-    //F1 Date Info
-    const startdates = await page.$$eval("span.start-date", (dates) => {
+    const dates = await page.$$eval("span.date__innerCell", (dates) => {
+        //maps all f1 race dates to dates
         return dates.map(x => x.textContent);
     });
-    const enddates = await page.$$eval("span.end-date", (dates) => {
-        return dates.map(x => x.textContent);
+    const year = await page.$eval("h1.headline", (year) => {
+        return year.textContent.split(" ")[3];
     });
-    const months = await page.$$eval("span.month-wrapper.f1-wide--xxs", (dates) => {
-        return dates.map(x => x.textContent);
-    });
-
-    const dates = [];
-    for(let i = 0; i < months.length; i++) {
-        dates[i] = months[i] + " " + startdates[i] + "-" + enddates[i];
-    }
-    races[0] = races[0].replace('\n', '');
-
-
     for(let i = 0; i < dates.length; i++) {
-        f1raceinfo[i] = dates[i] + " " + races[i];
+        //sets f1 race info with date/name
+        f1raceinfo[i] = dates[i] + " " + year + " Formula 1 " + races[i];
     }
 
     /* F1 INFO END */
@@ -184,36 +193,6 @@ async function start() {
     }
 
     /* GT3 INFO END */
-
-    /* MOTOGP INFO START */
-    /*
-    await page.goto("https://www.motogp.com/en/calendar");
-
-    const motogpnames = await page.$$eval(".grid-card__event-name", (names) => {
-        return names.map(x => x.textContent);
-    });
-    console.log(motogpnames[4]);
-    const motogpdays = await page.$$eval("span.grid-card__date-event__day", (days) => {
-        return days.map(x => x.textContent);
-    });
-    console.log(motogpdays[0]);
-    const motogpmonths = await page.$$eval("span.grid-card__date-event__month", (months) => {
-        return months.map(x => x.textContent);
-    });
-
-    const motogpdates = [];
-    for(let i = 0; i < motogpmonths.length; i++) {
-        motogpdates[i] = motogpmonths[i] + " " + motogpdays[i];
-    }
-
-    const motogpraceinfo = [];
-    for(let i = 0; i < motogpdates.length; i++) {
-        motogpraceinfo[i] = motogpdates[i] + " " + motogpnames[i];
-    }
-    */
-
-
-    /* MOTOGP INFO END */
 
     /* WRC INFO START  */
     await page.goto("https://www.wrc.com/en/championship/calendar/wrc/");
