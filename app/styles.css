@@ -73,6 +73,7 @@ body {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     align-content: space-between;
+    overflow: scroll;
 }
 
 .sixrows {
@@ -85,7 +86,6 @@ body {
 
 .grid > div {
     border: 0.02rem solid #363636;
-    overflow: scroll;
 }
 
 .grid div:hover:not(.today, .race) {
@@ -107,6 +107,7 @@ body {
     font-size: 0.5em;
     width: 100%;
     padding: .5em 0;
+    height: 1fr;
 }
 .race:nth-of-type(even){
     color: var(--white);

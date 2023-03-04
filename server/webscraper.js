@@ -12,7 +12,8 @@ module.exports = {
     gt3raceinfo: gt3raceinfo,
     wrcraceinfo: wrcraceinfo,
     standardizeF1Info: standardizeF1Info,
-    standardizeGT3Info: standardizeGT3Info
+    standardizeGT3Info: standardizeGT3Info,
+    standardizeWRCInfo: standardizeWRCInfo
 }
 
 function assembleNewInfo(month, day, year, name) {
@@ -135,6 +136,79 @@ function standardizeGT3Info(info) {
         }
     }
     return newInfo;
+}
+
+function standardizeWRCInfo(info) {
+    let count = 0;
+    let newInfo = [];
+    for (let i = 0; i < info.length; i++) {
+        const split = info[i].split(" ");
+        const startNumbers = split[0].split(".");
+        const endNumbers = split[2].split(".");
+        const start = parseInt(startNumbers[0]);
+        const end = parseInt(endNumbers[0]);
+        const startMonth = convertNumericMonth(startNumbers[1]);
+        const endMonth = convertNumericMonth(endNumbers[1]);
+        const year = endNumbers[2].split(" ")[0];
+
+        //Reset Name
+        let name = "";
+        for (let j = 3; j < split.length; j++)
+            name += " " + split[j];
+
+        //Standardize date
+        if(startMonth.localeCompare(endMonth) === 0) {
+            //Spans one month
+            for (let k = 0; k <= end - start; k++) {
+                newInfo[count] = assembleNewInfo(startMonth, start + k, year, name);
+                count++;
+            }
+        }
+        else {
+            //Spans two months
+            for (let k = 0; k <= daysThisMonth(startMonth) - start; k++) {
+                //days in the first month
+                newInfo[count] = assembleNewInfo(startMonth, start + k, year, name);
+                count++;
+            }
+            for (let l = 1; l <= end; l++) {
+                //days in second month
+                newInfo[count] = assembleNewInfo(endMonth, l, year, name);
+                count++;
+            }
+        }
+    }
+    return newInfo;
+}
+
+function convertNumericMonth(numMonth) {
+    numMonth = parseInt(numMonth);
+    switch (numMonth) {
+        case 1:
+            return "Jan";
+        case 2:
+            return "Feb";
+        case 3:
+            return "Mar";
+        case 4:
+            return "Apr";
+        case 5:
+            return "May";
+        case 6:
+            return "Jun";
+        case 7:
+            return "Jul";
+        case 8:
+            return "Aug";
+        case 9:
+            return "Sep";
+        case 10:
+            return "Oct";
+        case 11:
+            return "Nov";
+        case 12:
+            return "Dec";
+    }
 }
 
 function daysThisMonth(month) {

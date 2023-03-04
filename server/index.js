@@ -13,6 +13,7 @@ async function run() {
     //all races in the same date/name format
     const f1races = scraper.standardizeF1Info(scraper.f1raceinfo);
     const gt3races = scraper.standardizeGT3Info(scraper.gt3raceinfo);
+    const wrcraces = scraper.standardizeWRCInfo(scraper.wrcraceinfo);
     const races = f1races.concat(gt3races);
 
     //set the get response
@@ -23,6 +24,10 @@ async function run() {
     app.get("/gt3", (req, res) => {
         res.header('Access-Control-Allow-Origin', '*');
         res.json({"races": gt3races});
+    });
+    app.get("/wrc", (req, res) => {
+        res.header('Access-Control-Allow-Origin', '*');
+        res.json({"races": wrcraces});
     });
 
     app.listen(port, () => {

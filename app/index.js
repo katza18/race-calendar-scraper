@@ -119,6 +119,7 @@ document.querySelector(".prev").addEventListener("click", () => {
     date.setMonth(date.getMonth() - 1);
     if (check("f1")) setScraperData("f1");
     if (check("gt3")) setScraperData("gt3");
+    if (check("wrc")) setScraperData("wrc");
     load();
 });
 //Next
@@ -126,6 +127,7 @@ document.querySelector(".next").addEventListener("click", () => {
     date.setMonth(date.getMonth() + 1);
     if (check("f1")) setScraperData("f1");
     if (check("gt3")) setScraperData("gt3");
+    if (check("wrc")) setScraperData("wrc");
     load();
 });
 
@@ -136,6 +138,7 @@ document.querySelector(".f1 i").addEventListener("click", ()=> {
         document.querySelector(".f1 i").innerText = "check_box_outline_blank";
         load();
         if (check("gt3")) setScraperData("gt3");
+        if (check("wrc")) setScraperData("wrc");
     }
     else {
         document.querySelector(".f1 i").innerText = "check_box";
@@ -148,9 +151,23 @@ document.querySelector(".gt3 i").addEventListener("click", ()=> {
         document.querySelector(".gt3 i").innerText = "check_box_outline_blank";
         load(); //ideally we would just remove all f1 divs and not check
         if (check("f1")) setScraperData("f1");
+        if (check("wrc")) setScraperData("wrc");
     }
     else {
         document.querySelector(".gt3 i").innerText = "check_box";
         setScraperData("gt3");
+    }
+});
+//WRC
+document.querySelector(".wrc i").addEventListener("click", ()=> {
+    if(check("wrc")) {
+        document.querySelector(".wrc i").innerText = "check_box_outline_blank";
+        load(); //ideally we would just remove all f1 divs and not check
+        if (check("f1")) setScraperData("f1");
+        if (check("gt3")) setScraperData("gt3");
+    }
+    else {
+        document.querySelector(".wrc i").innerText = "check_box";
+        setScraperData("wrc");
     }
 });
