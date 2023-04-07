@@ -4,6 +4,9 @@ import './css/index.css';
 import App from './components/App';
 import './css/styles.css';
 import reportWebVitals from './reportWebVitals';
+import axios from 'axios';
+
+axios.defaults.baseURL = 'http://localhost:8080';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App />);

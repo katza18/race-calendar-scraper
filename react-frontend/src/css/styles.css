@@ -17,6 +17,10 @@ body {
     align-items: center;
 }
 
+.calendar-page {
+    display: flex;
+}
+
 .calendar {
     width: 50vw;
     height: 75vh;
@@ -151,6 +155,10 @@ body {
     color: var(--white);
 }
 
+.date {
+    overflow: scroll;
+}
+
 .f1 {
     background-color: var(--red);
     color: white;
@@ -164,8 +172,7 @@ body {
     color: white;
 }
 
-
-i:hover {
+.sport:hover {
     cursor: pointer;
 }
 

@@ -14,20 +14,13 @@ async function run() {
     const f1races = scraper.standardizeF1Info(scraper.f1raceinfo);
     const gt3races = scraper.standardizeGT3Info(scraper.gt3raceinfo);
     const wrcraces = scraper.standardizeWRCInfo(scraper.wrcraceinfo);
-    const races = f1races.concat(gt3races);
+
+    const allRaces = f1races.concat(gt3races, wrcraces);
 
     //set the get response
-    app.get("/f1", (req, res) => {
+    app.get("/races", (req, res) => {
         res.header('Access-Control-Allow-Origin', '*');
-        res.json({"races": f1races});
-    });
-    app.get("/gt3", (req, res) => {
-        res.header('Access-Control-Allow-Origin', '*');
-        res.json({"races": gt3races});
-    });
-    app.get("/wrc", (req, res) => {
-        res.header('Access-Control-Allow-Origin', '*');
-        res.json({"races": wrcraces});
+        res.json({"races": allRaces});
     });
 
     app.listen(port, () => {

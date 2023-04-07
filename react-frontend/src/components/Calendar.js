@@ -1,42 +1,30 @@
 import calendarStore from '../stores/calendarStore';
+import {useEffect} from 'react';
+import racesStore from '../stores/racesStore';
 
 export default function Calendar() {
+    const {fetchRaces, loadRaces} = racesStore();
+    const {fetchGrid} = calendarStore();
+    useEffect(() => {
+        fetchGrid();
+        fetchRaces();
+        loadRaces();
+    }, []);
+
     const store = calendarStore();
     const currDate = new Date(calendarStore((state) => state.currDate));
-
-    //Store various important days (first day of the month, last month's first date that appears, last day of the month)
-    const firstDay = new Date(currDate.getFullYear(), currDate.getMonth(), 1).getDay();
-    const lastMonthStart = new Date(currDate.getFullYear(), currDate.getMonth(), 0).getDate() - (firstDay - 1);
-    const lastDay = new Date(currDate.getFullYear(), currDate.getMonth() + 1, 0);
-
-    const grid = [];
-    const refDate = new Date();
-    let squares = 0;
-
-    for(let i = 0; i < firstDay; i++) {
-        grid.push(<div className="last-month" key={0 - i}>{lastMonthStart + i}</div>);
-        squares++;
-    }
-    for(let i = 1; i <= lastDay.getDate(); i++){
-        if(i === currDate.getDate() && currDate.getMonth() === refDate.getMonth() && currDate.getFullYear() === refDate.getFullYear())
-            grid.push(<div className="today" key={i}><div>{i}</div></div>);
-        else grid.push(<div><div className="date" key={i}>{i}</div></div>);
-        squares++;
-    }
-    for(let i = lastDay.getDay() + 1; i < 7; i++) {
-        grid.push(<div className="next-month" key={lastDay + i}>{i - lastDay.getDay()}</div>);
-        squares++;
-    }
+    const gridSquares = calendarStore((state) => state.gridSquares);
+    const grid = calendarStore((state) => state.grid);
 
     return(
         <div className="calendar">
             <div className="header">
-                <i className="material-icons prev" onClick={() => {store.setCurrMonth(currDate.getMonth() - 1)}}>arrow_left</i>
+                <i className="material-icons prev" onClick={async() => {await store.setCurrMonth(currDate.getMonth() - 1); await fetchGrid(); loadRaces()}}>arrow_left</i>
                 <div className="month">
                     <h1>{store.months[currDate.getMonth()]}</h1>
                     <p>{currDate.getFullYear()}</p>
                 </div>
-                <i className="material-icons next" onClick={() => {store.setCurrMonth(currDate.getMonth() + 1)}}>arrow_right</i>
+                <i className="material-icons next" onClick={async() => {await store.setCurrMonth(currDate.getMonth() + 1); await fetchGrid(); loadRaces()}}>arrow_right</i>
             </div>
 
             <div className="days">
@@ -49,17 +37,14 @@ export default function Calendar() {
                 <div>Sat</div>
             </div>
 
-            {squares && squares > 35 &&
+            {gridSquares > 35 ?
                 <div className="grid sixrows">
                 {grid.map((square) => {return square;})}
                 </div>
-            }
-            {squares && squares <= 35 &&
-                <div className="grid fiverows">
+                : <div className="grid fiverows">
                 {grid.map((square) => {return square;})}
                 </div>
             }
-
         </div>
     );
 }

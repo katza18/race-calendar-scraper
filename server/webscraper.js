@@ -16,12 +16,12 @@ module.exports = {
     standardizeWRCInfo: standardizeWRCInfo
 }
 
-function assembleNewInfo(month, day, year, name) {
+function assembleNewInfo(type, month, day, year, name) {
     //name should have a leading space " "
     if (day < 10) {
         day = `0${day}`;
     }
-    return month.substr(0, 3) + " " + day + " " + year + name;
+    return type + " " + month.substr(0, 3) + " " + day + " " + year + name;
 }
 
 //STANDARD DATE: MONTH(MAR) DAY(03) YEAR (2023)
@@ -29,9 +29,6 @@ function assembleNewInfo(month, day, year, name) {
 function standardizeF1Info(info) {
     //Separate date from race name
     var newInfo = [];
-    var tempStr = "";
-    var newDate = "";
-    const numDays = 3;
     var count = 0;
 
     for (let i = 0; i < info.length; i++) {
@@ -48,7 +45,7 @@ function standardizeF1Info(info) {
             for (let i = 5; i < split.length; i++)
                 name += " " + split[i];
             for (let j = 0; j <= end - start; j++) {
-                newInfo[count] = assembleNewInfo(month, start + j, year, name);
+                newInfo[count] = assembleNewInfo("fo1", month, start + j, year, name);
                 count++;
             }
         }
@@ -70,12 +67,12 @@ function standardizeF1Info(info) {
                 newDay = start + j;
                 const daysLeft = totalDays - j;
                 if (newDay <= daysThisMonth(monthOne) && doneOne === false) {
-                    newInfo[count] = assembleNewInfo(monthOne, newDay, year, name);
+                    newInfo[count] = assembleNewInfo("fo1", monthOne, newDay, year, name);
                 }
                 else {
                     doneOne = true;
                     newDay = end - daysLeft + 1;
-                    newInfo[count] = assembleNewInfo(monthTwo, newDay, year, name);
+                    newInfo[count] = assembleNewInfo("fo1", monthTwo, newDay, year, name);
                 }
                 count++;
             }
@@ -100,7 +97,7 @@ function standardizeGT3Info(info) {
             }
             for(let k = 0; k <= parseInt(dayEnd) - parseInt(dayStart); k++) {
                 const newDay = parseInt(dayStart) + k;
-                newInfo[count] = assembleNewInfo(month, newDay, year, name);
+                newInfo[count] = assembleNewInfo("gt3", month, newDay, year, name);
                 count++;
             }
         }
@@ -123,13 +120,13 @@ function standardizeGT3Info(info) {
                 const daysLeft = totalDays - j;
                 if (newDay <= daysThisMonth(monthOne) && doneOne === false) {
                     //month one
-                    newInfo[count] = assembleNewInfo(monthOne, newDay, yearOne, name);;
+                    newInfo[count] = assembleNewInfo("gt3", monthOne, newDay, yearOne, name);;
                 }
                 else {
                     //month two
                     doneOne = true;
                     newDay = parseInt(dayEnd) - daysLeft + 1;
-                    newInfo[count] = assembleNewInfo(monthTwo, newDay, yearTwo, name);
+                    newInfo[count] = assembleNewInfo("gt3", monthTwo, newDay, yearTwo, name);
                 }
                 count++
             }
@@ -160,7 +157,7 @@ function standardizeWRCInfo(info) {
         if(startMonth.localeCompare(endMonth) === 0) {
             //Spans one month
             for (let k = 0; k <= end - start; k++) {
-                newInfo[count] = assembleNewInfo(startMonth, start + k, year, name);
+                newInfo[count] = assembleNewInfo("wrc", startMonth, start + k, year, name);
                 count++;
             }
         }
@@ -168,12 +165,12 @@ function standardizeWRCInfo(info) {
             //Spans two months
             for (let k = 0; k <= daysThisMonth(startMonth) - start; k++) {
                 //days in the first month
-                newInfo[count] = assembleNewInfo(startMonth, start + k, year, name);
+                newInfo[count] = assembleNewInfo("wrc", startMonth, start + k, year, name);
                 count++;
             }
             for (let l = 1; l <= end; l++) {
                 //days in second month
-                newInfo[count] = assembleNewInfo(endMonth, l, year, name);
+                newInfo[count] = assembleNewInfo("wrc", endMonth, l, year, name);
                 count++;
             }
         }
