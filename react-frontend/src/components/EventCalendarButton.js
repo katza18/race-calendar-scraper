@@ -2,7 +2,7 @@ import React from 'react';
 import 'add-to-calendar-button';
 
 const EventCalendarButton = ({ events }) => {
-  const eventList = events.map((event) => {
+  const eventList = events.map((event, index) => {
     const { date, name} = event;
     return {
       startDate: date.toISOString().slice(0,10),
@@ -11,6 +11,8 @@ const EventCalendarButton = ({ events }) => {
       name
     };
   });
+
+  console.log(eventList);
 
   return (
     <add-to-calendar-button

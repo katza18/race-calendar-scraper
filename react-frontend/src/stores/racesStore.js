@@ -53,33 +53,36 @@ const racesStore = create((set, get) => ({
             const splitRace = race.split(" ");
             const raceMonth = splitRace[1];
             const raceYear = splitRace[3];
+            const raceType = splitRace[0];
 
-            if (raceMonth.localeCompare(month.substr(0, 3)) === 0 && raceYear.localeCompare(year) === 0) {
-                const raceType = splitRace[0]
+
+
+            //Check to see if the user wants to see this event
+            if(get()[raceType]) {
+                //Add all events regardless of whether they are rendered (this produces ics files that are too large to import in one go)
                 const raceDay = splitRace[2];
                 const name = race.slice(16);
                 const raceDate = new Date(raceDay + " " + raceMonth + " " + raceYear);
 
-                //Check to see if the user wants to see this event
-                if(get()[raceType]){
-                    //set events
-                    const newEvent = {
-                        name: name,
-                        date: raceDate
-                    };
-                    set((state) => ({
-                        events: [
-                            ...state.events,
-                            newEvent
-                        ]
-                    }));
+                if (raceMonth.localeCompare(month.substr(0, 3)) === 0 && raceYear.localeCompare(year) === 0) {
+                        //insert events into calendar
 
-                    //insert events into calendar
-                    for(let i = 0; i < boxes.length; i++) {
-                        if(parseInt(raceDay) === parseInt(i + 1)) {
-                            boxes[i].innerHTML += `<div class="race">${name}</div>`;
+                        //set events
+                        const newEvent = {
+                            name: name,
+                            date: raceDate
+                        };
+                        set((state) => ({
+                            events: [
+                                ...state.events,
+                                newEvent
+                            ]
+                        }));
+                        for(let i = 0; i < boxes.length; i++) {
+                            if(parseInt(raceDay) === parseInt(i + 1)) {
+                                boxes[i].innerHTML += `<div class="race">${name}</div>`;
+                            }
                         }
-                    }
                 }
             }
         });
