@@ -2,6 +2,8 @@ import axios from 'axios';
 import {create} from 'zustand';
 import calendarStore from './calendarStore';
 
+
+//this will become sports store
 const racesStore = create((set, get) => ({
 
     allRaces: null,
@@ -11,6 +13,8 @@ const racesStore = create((set, get) => ({
     gt3: false,
 
     wrc: false,
+
+    events: [],
 
     setChecked: (sport, checked) => {
         if (checked) {
@@ -31,6 +35,11 @@ const racesStore = create((set, get) => ({
     },
 
     loadRaces: () => {
+        //clear events
+        set({
+            events: []
+        });
+
         const currDate = calendarStore.getState().currDate;
         const months = calendarStore.getState().months;
         const races = get().allRaces;
@@ -48,12 +57,24 @@ const racesStore = create((set, get) => ({
             if (raceMonth.localeCompare(month.substr(0, 3)) === 0 && raceYear.localeCompare(year) === 0) {
                 const raceType = splitRace[0]
                 const raceDay = splitRace[2];
-                const name = race.slice(12);
+                const name = race.slice(16);
+                const raceDate = new Date(raceDay + " " + raceMonth + " " + raceYear);
 
-                console.log(raceType)
-                console.log(`${get()[raceType]}`)
-
+                //Check to see if the user wants to see this event
                 if(get()[raceType]){
+                    //set events
+                    const newEvent = {
+                        name: name,
+                        date: raceDate
+                    };
+                    set((state) => ({
+                        events: [
+                            ...state.events,
+                            newEvent
+                        ]
+                    }));
+
+                    //insert events into calendar
                     for(let i = 0; i < boxes.length; i++) {
                         if(parseInt(raceDay) === parseInt(i + 1)) {
                             boxes[i].innerHTML += `<div class="race">${name}</div>`;

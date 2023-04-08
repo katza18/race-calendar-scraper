@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import React from "react";
 
 const calendarStore = create((set) => ({
     currDate: new Date(),
@@ -23,6 +24,8 @@ const calendarStore = create((set) => ({
         "November",
         "December"
     ],
+
+    events: [],
 
     setCurrMonth: (month) => {
         const date = new Date(calendarStore.getState().currDate);
@@ -75,7 +78,7 @@ const calendarStore = create((set) => ({
         } catch(err) {
             console.log(err);
         }
-   }
+   },
 }))
 
 export default calendarStore;

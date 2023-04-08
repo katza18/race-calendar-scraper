@@ -1,9 +1,12 @@
 import calendarStore from "../stores/calendarStore";
 import racesStore from "../stores/racesStore";
+import EventCalendarButton from './EventCalendarButton';
+import React from "react";
 
 export default function Toggler() {
     const {fo1, wrc, gt3, setChecked, loadRaces} = racesStore();
     const {fetchGrid} = calendarStore();
+    const events = racesStore(state => state.events);
 
     return(
         <div className="toggler">
@@ -28,6 +31,7 @@ export default function Toggler() {
                     <i className="material-icons next">check_box_outline_blank</i>}
                 </div>
             </div>
+            {events && <EventCalendarButton events={events}/>}
         </div>
     )
 }

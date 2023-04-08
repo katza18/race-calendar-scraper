@@ -1,6 +1,7 @@
 import calendarStore from '../stores/calendarStore';
 import {useEffect} from 'react';
 import racesStore from '../stores/racesStore';
+import React from 'react';
 
 export default function Calendar() {
     const {fetchRaces, loadRaces} = racesStore();
