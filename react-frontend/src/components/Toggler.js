@@ -31,7 +31,9 @@ export default function Toggler() {
                     <i className="material-icons next">check_box_outline_blank</i>}
                 </div>
             </div>
-            {events && <EventCalendarButton events={events}/>}
+            <div className="add-to-calendar">
+                {events && <EventCalendarButton  events={events}/>}
+            </div>
         </div>
     )
 }

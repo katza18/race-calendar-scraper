@@ -54,6 +54,12 @@ body {
     align-items: center;
 }
 
+.add-to-calendar {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
 .days {
     background-color: #dc2f2f;
     color: #f8f8f8;
